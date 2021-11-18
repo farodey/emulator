@@ -9,40 +9,32 @@ import java.util.logging.Logger;
 public class Main {
 
     public static int counterValue = 0;
-
     public static final String BASE_URI = "http://localhost:8080/";
 
     public static HttpServer startServer() {
-
         final ResourceConfig config = new ResourceConfig();
         config.register(Servlet.class);
-
-        final HttpServer httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), config);
-        return httpServer;
+        return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), config);
     }
 
     public static void main(String[] args) {
-
         try {
-
             final HttpServer httpServer = startServer();
 
-            // add jvm shutdown hook
+            // Обработчик завершения работы JVM
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
-                    System.out.println("Shutting down the application...");
-
+                    System.out.println("Завершение работы приложения...");
                     httpServer.shutdownNow();
-
-                    System.out.println("Done, exit.");
+                    System.out.println("Готово, выходим.");
                 } catch (Exception e) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, e);
                 }
             }));
 
-            System.out.println(String.format("Application started.%nStop the application using CTRL+C"));
+            System.out.println("Приложение запущено. Остановить работу приложения можно с помощью CTRL+C");
 
-            // block and wait shut down signal, like CTRL+C
+            // Блокируем поток и ждем сигнала завершения, например CTRL+C
             Thread.currentThread().join();
 
         } catch (InterruptedException ex) {
