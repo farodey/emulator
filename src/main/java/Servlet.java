@@ -60,24 +60,30 @@ public class Servlet {
         String value = request.substring(msgType.length() + 1);
         String response = "";
 
-        if (msgType.equals("randValue")) {
-            int index = value.indexOf("_");
-            String s = value.substring(0, index);
-            int min = Integer.parseInt(value.substring(0, index));
-            int max = Integer.parseInt(value.substring(index + 1));
-            int rnd = (int) (Math.random() * (max - min) + min);
-            response = "Случайное число: " + Integer.toString(rnd);
+        switch (msgType) {
+            case "randValue":
+                // Генерация случайного числа в заданном диапазоне
+                int index = value.indexOf("_");
+                String s = value.substring(0, index);
+                int min = Integer.parseInt(value.substring(0, index));
+                int max = Integer.parseInt(value.substring(index + 1));
+                int rnd = (int) (Math.random() * (max - min) + min);
+                response = "Случайное число: " + rnd;
+                break;
 
-        } else if (msgType.equals("counterValue")) {
-            Main.counterValue = Main.counterValue + Integer.parseInt(value);
-            response = "Текущее значение счеткика: " + Main.counterValue;
-
-        } else if (msgType.equals("toLog")) {
-            Date date = new Date();
-            FileWriter writer = new FileWriter("log.log", true);
-            writer.write(date + " " + value + "\n");
-            writer.flush();
-            response = "В лог сервера записана строка: " +  value;
+            case "counterValue":
+                // Счетчик
+                Main.counterValue = Main.counterValue + Integer.parseInt(value);
+                response = "Текущее значение счеткика: " + Main.counterValue;
+                break;
+            case "toLog":
+                // Запись в лог
+                Date date = new Date();
+                FileWriter writer = new FileWriter("log.log", true);
+                writer.write(date + " " + value + "\n");
+                writer.flush();
+                response = "В лог сервера записана строка: " + value;
+                break;
         }
         return "<!DOCTYPE html>\n" +
                 "<html>\n" +
